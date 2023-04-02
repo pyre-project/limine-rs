@@ -341,7 +341,16 @@ pub struct MemmapResponse {
 response_revision_impl!(MemmapResponse);
 
 impl MemmapResponse {
-    pub fn memmap<'a>(&'a mut self) -> &'a mut [MemmapEntry] {
+    pub fn get_memmap<'a>(&'a self) -> &'a [MemmapEntry] {
+        unsafe {
+            core::slice::from_raw_parts(
+                self.entries_ptr.as_ptr(),
+                self.entry_count.try_into().unwrap(),
+            )
+        }
+    }
+
+    pub fn get_memmap_mut<'a>(&'a mut self) -> &'a mut [MemmapEntry] {
         unsafe {
             core::slice::from_raw_parts_mut(
                 self.entries_ptr.as_ptr(),
