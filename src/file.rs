@@ -52,13 +52,13 @@ impl File {
     }
 
     #[inline]
-    pub const fn base(&self) -> u64 {
-        self.virtual_base
-    }
-
-    #[inline]
-    pub const fn length(&self) -> u64 {
-        self.length
+    pub fn data(&self) -> &[u8] {
+        unsafe {
+            core::slice::from_raw_parts(
+                usize::try_from(self.virtual_base).unwrap() as *mut u8,
+                self.length.try_into().unwrap(),
+            )
+        }
     }
 
     #[inline]
