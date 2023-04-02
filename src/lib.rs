@@ -81,21 +81,15 @@ macro_rules! make_struct {
                 }
             }
 
-            pub fn get_response<'a>(&'a self) -> Option<&'a $response_ty> {
+            pub fn get_response(&self) -> Option<&$response_ty> {
                 unsafe {
-                    self.response
-                        .get()
-                        .read()
-                        .map(|response_ptr| response_ptr.as_ref())
+                    (&*self.response.get()).as_ref().map(|ptr| ptr.as_ref())
                 }
             }
 
-            pub fn get_response_mut<'a>(&'a mut self) -> Option<&'a mut $response_ty> {
+            pub fn get_response_mut(&mut self) -> Option<&mut $response_ty> {
                 unsafe {
-                    self.response
-                        .get()
-                        .read()
-                        .map(|mut response_ptr| response_ptr.as_mut())
+                    (&mut *self.response.get()).as_mut().map(|ptr| ptr.as_mut())
                 }
             }
 
@@ -292,7 +286,7 @@ impl SmpResponse {
     }
 
     /// Return's the SMP info array pointer as a mutable rust slice.
-    pub fn cpus<'a>(&'a mut self) -> &'a mut [CpuInfo] {
+    pub fn cpus(&mut self) -> &mut [CpuInfo] {
         unsafe {
             core::slice::from_raw_parts_mut(
                 self.cpus_ptr.as_ptr(),
@@ -363,18 +357,9 @@ pub struct MemmapResponse {
 response_revision_impl!(MemmapResponse);
 
 impl MemmapResponse {
-    pub fn get_memmap<'a>(&'a self) -> &'a [MemmapEntry] {
+    pub fn get_memmap(&self) -> &[MemmapEntry] {
         unsafe {
             core::slice::from_raw_parts(
-                self.entries_ptr.as_ptr(),
-                self.entry_count.try_into().unwrap(),
-            )
-        }
-    }
-
-    pub fn get_memmap_mut<'a>(&'a mut self) -> &'a mut [MemmapEntry] {
-        unsafe {
-            core::slice::from_raw_parts_mut(
                 self.entries_ptr.as_ptr(),
                 self.entry_count.try_into().unwrap(),
             )
@@ -492,7 +477,7 @@ impl Framebuffer {
     }
 
     #[inline]
-    pub fn edid<'a>(&'a self) -> &'a [u8] {
+    pub fn edid(&self) -> &[u8] {
         unsafe {
             core::slice::from_raw_parts(self.edid_ptr.as_ptr(), self.edid_size.try_into().unwrap())
         }
@@ -510,7 +495,7 @@ pub struct FramebufferResponse {
 response_revision_impl!(FramebufferResponse);
 
 impl FramebufferResponse {
-    pub fn framebuffers<'a>(&'a self) -> &'a [Framebuffer] {
+    pub fn framebuffers(&self) -> &[Framebuffer] {
         // Safety: Bootloader guarantees the pointer to be valid for `T: Framebuffer` of count.
         unsafe {
             core::slice::from_raw_parts(
@@ -564,7 +549,7 @@ pub struct ModuleResponse {
 response_revision_impl!(ModuleResponse);
 
 impl ModuleResponse {
-    pub fn modules<'a>(&'a self) -> &'a [File] {
+    pub fn modules(&self) -> &[File] {
         unsafe {
             core::slice::from_raw_parts(
                 self.modules_ptr.as_ptr(),
