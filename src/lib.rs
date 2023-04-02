@@ -299,7 +299,7 @@ impl SmpResponse {
 /* MEMORY MAP */
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum MemoryMapEntryType {
     Usable = 0,
     Reserved = 1,
@@ -351,13 +351,13 @@ pub struct MemmapResponse {
     /// How many memory map entries are present.
     entry_count: u64,
     /// Pointer to an array of `entry_count` pointers to struct [`MemmapEntry`] structures.
-    entries_ptr: NonNull<MemmapEntry>,
+    entries_ptr: NonNull<&'static MemmapEntry>,
 }
 
 response_revision_impl!(MemmapResponse);
 
 impl MemmapResponse {
-    pub fn get_memmap(&self) -> &[MemmapEntry] {
+    pub fn get_memmap(&self) -> &[&'static MemmapEntry] {
         unsafe {
             core::slice::from_raw_parts(
                 self.entries_ptr.as_ptr(),
