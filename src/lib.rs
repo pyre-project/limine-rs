@@ -61,6 +61,9 @@ macro_rules! make_struct {
 
         // Safety: Internal pointer is thread-agnostic (located in main memory).
         unsafe impl Send for $name {}
+        // Safety: All function accessors taking `self` use the requisite reference type
+        //          (i.e. &self for immutable, &mut for mutable).
+        unsafe impl Sync for $name {}
 
         impl $name {
             // XXX: The request ID is composed of 4 64-bit wide unsigned integers but the first
