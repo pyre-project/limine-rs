@@ -320,7 +320,19 @@ pub enum MemoryMapEntryType {
 pub struct MemmapEntry {
     base: u64,
     len: u64,
-    typ: MemoryMapEntryType,
+    ty: MemoryMapEntryType,
+}
+
+impl MemmapEntry {
+    #[inline]
+    pub const fn range(&self) -> core::ops::Range<u64> {
+        self.base..(self.base + self.len)
+    }
+
+    #[inline]
+    pub const fn ty(&self) -> MemoryMapEntryType {
+        self.ty
+    }
 }
 
 make_struct!(
