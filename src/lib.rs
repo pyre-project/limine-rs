@@ -245,8 +245,8 @@ impl CpuInfo {
         self.extra_argument
     }
 
-    pub fn jump_to(&mut self, func: extern "C" fn(info: &CpuInfo) -> !, arg: u64) {
-        self.extra_argument = arg;
+    pub fn jump_to(&mut self, func: extern "C" fn(info: &CpuInfo) -> !, arg: Option<u64>) {
+        self.extra_argument = arg.unwrap_or(0);
         self.goto_address = Some(func);
 
         // CPU will now be executing at `func` address.
