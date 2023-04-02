@@ -59,6 +59,9 @@ macro_rules! make_struct {
             $($field_name: $field_ty),*
         }
 
+        // Safety: Internal pointer is thread-agnostic (located in main memory).
+        unsafe impl Send for $name {}
+
         impl $name {
             // XXX: The request ID is composed of 4 64-bit wide unsigned integers but the first
             //      two remain constant. This is refered as `_COMMON_MAGIC` in the  protocol
