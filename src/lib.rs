@@ -281,6 +281,16 @@ pub struct SmpResponse {
 response_revision_impl!(SmpRequest);
 
 impl SmpResponse {
+    #[inline]
+    pub const fn bsp_lapic_id(&self) -> u32 {
+        self.bsp_lapic_id
+    }
+
+    #[inline]
+    pub const fn flags(&self) -> u32 {
+        self.flags
+    }
+
     /// Return's the SMP info array pointer as a mutable rust slice.
     pub fn cpus<'a>(&'a mut self) -> &'a mut [CpuInfo] {
         unsafe {
