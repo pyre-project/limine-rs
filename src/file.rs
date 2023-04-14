@@ -22,9 +22,9 @@ pub struct File {
     /// The size of the file.
     length: u64,
     /// The path of the file within the volume, with a leading slash.
-    path: Option<NulStr>,
+    path: NulStr,
     /// A command line associated with the file.
-    cmdline: Option<NulStr>,
+    cmdline: NulStr,
     /// Type of media file resides on.
     media_type: MediaType,
     unused: [u8; 4],
@@ -62,13 +62,13 @@ impl File {
     }
 
     #[inline]
-    pub fn path(&self) -> Option<&str> {
-        self.path.as_ref().map(|path| path.into())
+    pub fn path(&self) -> &str {
+        (&self.path).into()
     }
 
     #[inline]
-    pub fn cmdline(&self) -> Option<&str> {
-        self.cmdline.as_ref().map(|cmdline| cmdline.into())
+    pub fn cmdline(&self) -> &str {
+        (&self.cmdline).into()
     }
 
     #[inline]
