@@ -124,19 +124,19 @@ make_struct!(
 #[derive(Debug)]
 pub struct BootInfoResponse {
     revision: u64,
-    name: Option<NulStr>,
-    version: Option<NulStr>,
+    name: NulStr,
+    version: NulStr,
 }
 
 response_revision_impl!(BootInfoResponse);
 
 impl BootInfoResponse {
-    pub fn name(&self) -> Option<&str> {
-        self.name.as_ref().map(|name| name.into())
+    pub fn name(&self) -> &str {
+        (&self.name).into()
     }
 
-    pub fn version(&self) -> Option<&str> {
-        self.version.as_ref().map(|version| version.into())
+    pub fn version(&self) -> &str {
+        (&self.version).into()
     }
 }
 
@@ -543,13 +543,13 @@ make_struct!(
 pub struct ModuleResponse {
     revision: u64,
     module_count: u64,
-    modules_ptr: NonNull<File>,
+    modules_ptr: NonNull<&'static File>,
 }
 
 response_revision_impl!(ModuleResponse);
 
 impl ModuleResponse {
-    pub fn modules(&self) -> &[File] {
+    pub fn modules(&self) -> &[&File] {
         unsafe {
             core::slice::from_raw_parts(
                 self.modules_ptr.as_ptr(),
