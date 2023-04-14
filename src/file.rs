@@ -22,12 +22,12 @@ pub struct File {
     /// The size of the file.
     length: u64,
     /// The path of the file within the volume, with a leading slash.
-    path: NulStr,
+    path: Option<NulStr>,
     /// A command line associated with the file.
-    cmdline: NulStr,
+    cmdline: Option<NulStr>,
     /// Type of media file resides on.
     media_type: MediaType,
-    unused: u32,
+    unused: [u8; 4],
     /// If non-0, this is the IP of the TFTP server the file was loaded from.
     tftp_ip: u32,
     /// Likewise, but port.
@@ -62,13 +62,13 @@ impl File {
     }
 
     #[inline]
-    pub fn path(&self) -> &str {
-        (&self.path).into()
+    pub fn path(&self) -> Option<&str> {
+        self.path.as_ref().map(|path| path.into())
     }
 
     #[inline]
-    pub fn cmdline(&self) -> &str {
-        (&self.cmdline).into()
+    pub fn cmdline(&self) -> Option<&str> {
+        self.cmdline.as_ref().map(|cmdline| cmdline.into())
     }
 
     #[inline]

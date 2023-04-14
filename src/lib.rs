@@ -124,19 +124,19 @@ make_struct!(
 #[derive(Debug)]
 pub struct BootInfoResponse {
     revision: u64,
-    name: NulStr,
-    version: NulStr,
+    name: Option<NulStr>,
+    version: Option<NulStr>,
 }
 
 response_revision_impl!(BootInfoResponse);
 
 impl BootInfoResponse {
-    pub fn name(&self) -> &str {
-        (&self.name).into()
+    pub fn name(&self) -> Option<&str> {
+        self.name.as_ref().map(|name| name.into())
     }
 
-    pub fn version(&self) -> &str {
-        (&self.version).into()
+    pub fn version(&self) -> Option<&str> {
+        self.version.as_ref().map(|version| version.into())
     }
 }
 
