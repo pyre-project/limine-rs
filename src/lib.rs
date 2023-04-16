@@ -269,7 +269,7 @@ pub struct SmpResponse {
     cpu_count: u64,
     /// Pointer to an array of `cpu_count` pointers to struct [`SmpInfo`]
     /// structures.
-    cpus_ptr: NonNull<CpuInfo>,
+    cpus_ptr: NonNull<&'static mut CpuInfo>,
 }
 
 response_revision_impl!(SmpRequest);
@@ -286,7 +286,7 @@ impl SmpResponse {
     }
 
     /// Return's the SMP info array pointer as a mutable rust slice.
-    pub fn cpus(&mut self) -> &mut [CpuInfo] {
+    pub fn cpus(&mut self) -> &mut [&mut CpuInfo] {
         unsafe {
             core::slice::from_raw_parts_mut(
                 self.cpus_ptr.as_ptr(),
